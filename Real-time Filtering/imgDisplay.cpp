@@ -17,6 +17,7 @@ int main() {
         return 1;
     }
 
+    // open the window
     imshow("Dog view", img);
     int k = waitKey(0);
 
