@@ -1,54 +1,45 @@
-
 #include <vector>
 #include <opencv2/opencv.hpp>
 
 #include "../utils/csv_util.h"
 #include "../utils/utils.h"
 
-// baseline match function - match 2 images solely based on the center 9 x 9 pixles
 int baseline_match(cv::Mat &image, std::vector<std::pair<char *, float>> &imagevec, char *metric) {
     std::vector<char *> filenames;
     std::vector<std::vector<float>> data;
     char csvFile[] = "../csv_files/baseline.csv";
     std::vector<float> target_vect;
-
     // loop through each pixel in the image ang only the center 9 pixels
     int nrow = image.rows / 2 - 4;
     int ncol = image.cols / 2 - 4;
 
-    // center rows
     for (int i = nrow; i < nrow + 9; i++)
     {
-        // access source row pointer
         cv::Vec3b *rowptr = image.ptr<cv::Vec3b>(i);
-        // center cols
         for (int j = ncol; j < ncol + 9; j++)
         {
-            // go through color channels
             for (int k = 0; k < 3; k++)
             {
-                // put channel value into vector
                 target_vect.push_back(rowptr[j][k]);
             }
         }
     }
 
-    // loop through each entry in the csv file and calculate distance metric against the target value
     read_image_data_csv(csvFile, filenames, data, 0);
-    // calculate the sum squared error and put them into a map
+    // For each data in our db, we will do the math, simply store all scores in the vec.
     for (int i = 0; i < data.size(); i++) {
         float distance = 0;
         
-        // calculate the square difference or intersection
+        // to get SSD or intersection, will record these metrics. The only thing left to do is to sort & pick in the main()
         if (std::strcmp(metric, "squared_difference") == 0) {
-            distance = get_ssd(target_vect, data[i]);
+            distance = get_ssd(target_vect, data[i]);  
         } else if (std::strcmp(metric, "intersection") == 0) {
             distance = intersection(target_vect, data[i]);            
         }
 
         imagevec.push_back(std::make_pair(filenames[i], distance));
     }
-    return (0);
+    return 0;
 }
 
 // histogram match function -  calculate the similirity of the images histogram.csv with the given target image using intersection metric
@@ -75,7 +66,6 @@ int histogram_match(cv::Mat &image, std::vector<std::pair<char *, float>> &image
     for (int i = 0; i < data.size(); i++) {
         float distance;
 
-
         // calculate the square difference or intersection
         if (std::strcmp(metric, "squared_difference") == 0) {
             distance = get_ssd(target_flat_hist, data[i]);
@@ -86,7 +76,7 @@ int histogram_match(cv::Mat &image, std::vector<std::pair<char *, float>> &image
         imagevec.push_back(std::make_pair(filenames[i], distance));
     }
 
-    return (0);
+    return 0;
 
 }
 
@@ -94,27 +84,20 @@ int histogram_match(cv::Mat &image, std::vector<std::pair<char *, float>> &image
 // and down_histogram.csv with the given target image using intersection metric
 int multi_histogram_match(cv::Mat &image, std::vector<std::pair<char *, float>> &imagevec, char *metric) {
 
-    // initilize two halves of the target image
     cv::Mat top_image;
     cv::Mat down_image;
-
-    // initilize target histogram top and down
     cv::Mat top_target_hist;
     cv::Mat down_target_hist;
 
-    // initilize target vector top and down
     std::vector<float> top_target_flat_hist;
     std::vector<float> down_target_flat_hist;
 
-    // initilize filenames vector to store the images names
     std::vector<char *> top_filenames;
     std::vector<char *> down_filenames;
 
-    // initilize data vector to store the 1d vector after histogram 
     std::vector<std::vector<float>> top_data;
     std::vector<std::vector<float>> down_data;
 
-    // top and down 2 csv files
     char top_csv_file[] = "../csv_files/top_histogram.csv";
     char down_csv_file[] = "../csv_files/down_histogram.csv";
 
@@ -159,7 +142,7 @@ int multi_histogram_match(cv::Mat &image, std::vector<std::pair<char *, float>> 
         distance = (top_distance * 0.5) + (down_distance * 0.5);
         imagevec.push_back(std::make_pair(top_filenames[i], distance));
     }
-    return (0);
+    return 0;
 
 }
 
@@ -223,7 +206,7 @@ int color_and_texture_match(cv::Mat &image, std::vector<std::pair<char *, float>
         distance = (0.1 * color_distance) + (0.9 * magnitude_distance);
         imagevec.push_back(std::make_pair(color_filenames[i], distance));
     }
-    return (0);
+    return 0;
 }
 
 // use hsv histogram to compare images to match the images that are similar to a human eye
@@ -266,5 +249,5 @@ int hsv_match(cv::Mat &image, std::vector<std::pair<char *, float>> &imagevec, c
         imagevec.push_back(std::make_pair(color_filenames[i], distance));
     }
 
-    return (0);
+    return 0;
 }

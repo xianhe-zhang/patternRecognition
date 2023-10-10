@@ -1,4 +1,3 @@
-
 #include <opencv2/opencv.hpp>
 
 #include <cstdio>
@@ -11,7 +10,6 @@
 
 #include "../utils/csv_util.h"
 #include "match_helper.h"
-
 
 bool sorter(const std::pair<char*, float> &a,
                  const std::pair<char*, float> &b) {
@@ -27,6 +25,7 @@ int main(int argc, char *argv[]) {
         exit(-1);
     }
 
+    // get all vars from cmd
     char *image_name = argv[1];
     char *match_type = argv[2];
     char *dir_name = argv[3];
@@ -39,10 +38,9 @@ int main(int argc, char *argv[]) {
     std::strcat(imagepath, "/");
     std::strcat(imagepath, image_name);
 
+    // 
     cv::Mat image;
     std::vector<std::pair<char *, float>> imagevec;
-
-    // read input image
     image = cv::imread(imagepath, cv::IMREAD_ANYCOLOR);
 
     // check if image file can be opened
@@ -52,20 +50,14 @@ int main(int argc, char *argv[]) {
     }
 
     if (std::strcmp(match_type, "baseline") == 0) {
-        // different matching algo
-        // baseline match
         baseline_match(image, imagevec, metric);
     } else if (std::strcmp(match_type, "histogram") == 0) {
-        // histogram match
         histogram_match(image, imagevec, metric);
     } else if (std::strcmp(match_type, "multihistogram") == 0) {
-        // multi histogram match method
         multi_histogram_match(image, imagevec, metric);
     } else if (std::strcmp(match_type, "texture") == 0) {
-        // color and texture match
         color_and_texture_match(image, imagevec, metric);
     } else if (std::strcmp(match_type, "hsv") == 0) {
-        // hsv match
         hsv_match(image, imagevec, metric);
     }
 
