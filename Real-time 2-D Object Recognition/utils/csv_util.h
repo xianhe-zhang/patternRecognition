@@ -22,7 +22,7 @@
 
   The function returns a non-zero value in case of an error.
  */
-int append_image_data_csv( char *filename, char *image_filename, std::vector<float> &image_data, int reset_file = 0 );
+int append_image_data_csv( char *filename, char *image_filename, std::vector<double> &image_data, int reset_file = 0 );
 
 
 /*
@@ -39,6 +39,6 @@ int append_image_data_csv( char *filename, char *image_filename, std::vector<flo
 
   The function returns a non-zero value if something goes wrong.
  */
-int read_image_data_csv( char *filename, std::vector<char *> &filenames, std::vector<std::vector<float>> &data, int echo_file = 0 );
+int read_image_data_csv( char *filename, std::vector<char *> &filenames, std::vector<std::vector<double>> &data, int echo_file = 0 );
 
 #endif

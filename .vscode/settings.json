@@ -91,5 +91,5 @@
         "random": "cpp",
         "stop_token": "cpp",
         "cinttypes": "cpp"
-    }
+    },
 }
