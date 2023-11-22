@@ -141,17 +141,19 @@ def main():
     train_losses = []
     train_counter = []
     test_losses = []
-    test_counter = [i * len(train_loader.dataset) for i in range(n_epochs + 1)]
+    test_counter = [i * len(train_loader.dataset) for i in range(epochs + 1)]
 
     # evaluate the model first before training
     test(nn, test_loader, test_losses)
     for epoch in range(1, epochs + 1):
-        train(epoch, nn, optimizer, train_loader, train_losses, train_counter, log_interval, flag)
+        train(epoch, nn, optimizer, train_loader, train_losses, train_counter, log_interval, 'main')
         test(nn, test_loader, test_losses)
 
     # training and testing plot
     plot(train_counter, train_losses, test_counter, test_losses)
-
+    print("程序暂停。按下回车键继续。")
+    input()  # 这里程序会暂停，等待用户按回车
+    print("程序继续执行。")
 
 if __name__ == '__main__':
     main()

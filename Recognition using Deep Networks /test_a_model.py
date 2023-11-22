@@ -15,7 +15,7 @@ def threshold_img(file):
     img = cv2.imread(os.path.join(folder_path, file), cv2.IMREAD_GRAYSCALE)
     thresh_val = 128
     result, thresh = cv2.threshold(img, thresh_val, 255, cv2.THRESH_BINARY)
-    return cv2.bitwise(thresh)
+    return cv2.bitwise_not(thresh)
 # Task 1-E
 def predict(model, data, targets):
     predictions = list()
@@ -30,6 +30,7 @@ def predict(model, data, targets):
             print("target/predicted: {}/{}".format(target, pred))
             for j in range(output.size(1)):
                 print(f"Output feature {j}: {output[0][j]:.2f}")
+            
     return predictions
 
 # Task 1-F
@@ -46,16 +47,14 @@ def predict_handwritten(model):
         h_data.append(tensor)
 
     predictions = predict(model, h_data, h_target)
+
     plot(h_data,predictions,10, 'Prediction')
 
 def plot(mnist_dataset, example_targets, no_images, truth_or_pred):
     plt.figure()
     for i in range(no_images):
-        # set the plot to be 2 by 3
         plt.subplot(4, 3, i+1)
-        # set it to be a tight plot
         plt.tight_layout()
-        # set a few parameters
         plt.imshow(mnist_dataset[i][0], cmap='gray', interpolation='none')
         plt.title("{}: {}".format(truth_or_pred, example_targets[i]))
         plt.xticks([])
@@ -69,13 +68,16 @@ def main():
     model = Net()
     model.eval()
     network_stat = torch.load('./models/model.pth')
+    model.eval()
     model.load_state_dict(network_stat)
-    train_loader, test_loader = load_data(batch_size, batch_size_test)
+    train_loader, test_loader = load_data(batch_size, batch_size_test, 25000)
     test = enumerate(test_loader)
     batch_idx, (test_data, test_targets) = next(test)
     predictions = predict(model, test_data, test_targets)
     show(test_data, predictions, 9, 'Predication')
+    print('1')
     predict_handwritten(model)
+
 
 if __name__ == '__main__':
     main()

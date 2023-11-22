@@ -109,7 +109,7 @@ def main():
                 print(example_data.shape)
 
                 # plot the first 6 digit images
-                show(example_data, example_targets, 6, 'Ground Truth')
+                # show(example_data, example_targets, 6, 'Ground Truth')
 
                 # initialize the network
 
@@ -132,7 +132,7 @@ def main():
                     train(epoch, network, optimizer, train_loader, train_losses, train_counter, log_interval, flag)
                     test(network, test_loader, test_losses, variable_tuple, epoch, record)
                 # training and testing plot
-                plot(train_counter, train_losses, test_counter, test_losses)
+                # plot(train_counter, train_losses, test_counter, test_losses)
 
     sorted_dict = dict(sorted(record.items(), key=lambda item: item[1], reverse=True))
 
